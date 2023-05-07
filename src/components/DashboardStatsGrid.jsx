@@ -1,37 +1,39 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoBagHandle, IoPieChart, IoPeople, IoCart } from "react-icons/io5";
 import BoxWrapper from "./BoxWrapper";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
-const DummyData = [
-  {
-    title: "Course Unit",
-    number: 6,
-	link: '/courses'
-  },
-  {
-    title: "Retakes",
-    number: 0,
-	link: '/retakes'
-  },
-  {
-    title: "CGPA",
-    number: 3.6,
-  },
-];
+const SingUserApi = `http://localhost:5000/users/6457a1719c13f15d1d99d024/results`
 
 export default function DashboardStatsGrid() {
+
+  const [results, setResults] = useState([])
+
+
+  useEffect(() => {
+    axios
+      .get(`${SingUserApi}`)
+      .then((response) => setResults(response.data))
+      .catch((error) => console.error(error));
+  }, [results]); 
+  
+
+  console.log('final results loading',results);
   return (
-    <div className="flex gap-4">
-      {DummyData.map((data, index) => {
-        const { title, number, link } = data;
-        console.log(title, number);
-        return (
-          <Link to={link} className="flex flex-1 ">
-            <BoxWrapper title={title} number={number} />
+    <div className="grid grid-cols-3 gap-6 mt-4">
+      {results?.map((data) => (
+          <Link to={`/results/${data._id}`} className="flex flex-1 " key={data._id}>
+            <BoxWrapper 
+              courseName={data.course_name}
+              test={data.test}
+              assignment={data.assignment}
+              assessment={data.assessment}
+              presentation={data.presentation}
+              code={data.code}
+            />
           </Link>
-        );
-      })}
+      ))}
       {/* <BoxWrapper>
 				<div className="rounded-full h-12 w-12 flex items-center justify-center bg-orange-600">
 					<IoPeople className="text-2xl text-white" />

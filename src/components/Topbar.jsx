@@ -3,27 +3,29 @@ import { Menu, Popover, Transition } from '@headlessui/react'
 import { HiOutlineBell, HiOutlineSearch, HiOutlineChatAlt } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
-import useLogout from './useLogout'
+import { logOut } from '../feature/auth/authSlice'
 import { toast } from "react-toastify";
+import { useDispatch } from 'react-redux'
 
 export default function Topbar() {
 	const navigate = useNavigate()
-    const logout = useLogout()
+	const dispatch = useDispatch()
 
     const signout = async() => {
-        await logout()
+        await dispatch(logOut())
+		toast.warning("Logout successfully")
         navigate('/login')
   }
 
 	return (
 		<div className="bg-white h-16 px-4 flex items-center border-b border-gray-200 justify-between">
 			<div className="hidden md:flex relative ">
-				<HiOutlineSearch fontSize={20} className="text-gray-400 absolute top-1/2 left-3 -translate-y-1/2" />
+				{/* <HiOutlineSearch fontSize={20} className="text-gray-400 absolute top-1/2 left-3 -translate-y-1/2" />
 				<input
 					type="text"
 					placeholder="Search..."
 					className="text-sm focus:outline-none active:outline-none border border-gray-300 w-[24rem] h-10 pl-11 pr-4 rounded-sm"
-				/>
+				/> */}
 			</div>
 			<div className="flex flex-1 items-center gap-10 mr-2">
 				<Popover className="hidden lg:flex relative">
@@ -118,19 +120,6 @@ export default function Topbar() {
 										)}
 									>
 										Your Profile
-									</div>
-								)}
-							</Menu.Item>
-							<Menu.Item>
-								{({ active }) => (
-									<div
-										onClick={() => navigate('/settings')}
-										className={classNames(
-											active && 'bg-gray-100',
-											'active:bg-gray-200 rounded-sm px-4 py-2 text-gray-700 cursor-pointer focus:bg-gray-200'
-										)}
-									>
-										Settings
 									</div>
 								)}
 							</Menu.Item>

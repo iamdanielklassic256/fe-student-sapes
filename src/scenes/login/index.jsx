@@ -4,11 +4,13 @@ import useAuth from "../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { setCredentials } from "../../feature/auth/authSlice";
+import {useLoginMutation} from '../../feature/auth/authApiSlice'
+import { useDispatch } from "react-redux";
 
 const loginUrl = "http://localhost:5000/login";
 
 const Login = () => {
-  const { setAuth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -20,40 +22,38 @@ const Login = () => {
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
+  
+  const [login, {isLoading }] = useLoginMutation()
+  const dispatch = useDispatch();
+
+
   // useEffect(() => {
   //     userRef.current.focus()
   // });
 
-  useEffect(() => {
-    setErrMsg("");
-  }, [user, pwd]);
+  // useEffect(() => {
+  //   setErrMsg("");
+  // }, [user, pwd]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     // console.log(user, pwd)
     if (validate()) {
-      try {
-        const response = await axios.post(
-          loginUrl,
-          JSON.stringify({ user, pwd }),
-          {
-            headers: { "Content-Type": "application/json" },
-            withCredentials: true,
-          }
-        );
-        // console.log(response?.data);
-        // console.log(response?.accessToken);
-        // console.log(JSON.stringify(response))
-        const accessToken = response?.accessToken?.accessToken;
-        const roles = response?.data?.roles;
-        setAuth({ user, pwd, roles, accessToken });
-        setUser("");
-        setPwd("");
-        // setSuccess(true);
-        navigate(from, { replace: true });
-        setIsLoading(false);
-        toast.success(`Student logged in successfully`);
-      } catch (err) {
+      try{
+        const userData = await login({ user, pwd }).unwrap()
+        dispatch(setCredentials({...userData, user}))
+  
+        
+         // console.log(response?.accessToken);
+       
+         setUser('');
+         setPwd(''); 
+         // setSuccess(true);
+         navigate(from, {replace: true})
+         toast.success( `${user} logged successfully`);
+         console.log("userData", userData);
+    }
+    catch (err) {
         if (err?.response) {
           setErrMsg("No Server Response");
           toast.error(`Invalid  Username/Password`);
@@ -67,7 +67,7 @@ const Login = () => {
           setErrMsg("Login Failed");
           toast.success(`Logged in successfully`);
         }
-        setErrMsg.current.focus();
+        // setErrMsg.current.focus();
       }
     }
   };

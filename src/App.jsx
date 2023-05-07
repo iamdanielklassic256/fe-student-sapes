@@ -22,6 +22,7 @@ import Unauthorized from "./scenes/unauthorized";
 import RequireAuth from "./auth/RequireAuth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SIngleResults from "./scenes/dashboard/SIngleResults";
 
 function App() {
 
@@ -48,6 +49,7 @@ function App() {
             element={<RequireAuth allowedRoles={[ROLES.Student]} />}
           >
             <Route path="/" element={<Dashboard />} />
+            <Route path="/results/:id" element={<SIngleResults />} />
             <Route path="courses" element={<Courses />} />
             <Route path="courses/:id" element={<CourseResults />} />
             <Route path="evaluation" element={<EvaluationPage />} />

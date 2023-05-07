@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { BiChevronDown, BiMenu } from "react-icons/bi";
-import { AiFillEnvironment, AiFillPieChart } from "react-icons/ai";
+import { AiFillEnvironment, AiFillPieChart, AiFillProfile, AiOutlineLogin } from "react-icons/ai";
 import { RxAvatar } from "react-icons/rx";
 import { RiDashboardFill } from "react-icons/ri";
 import { BsFillHousesFill } from "react-icons/bs";
 import { FaDiscourse, FaUserAlt } from "react-icons/fa";
 import { SiGoogleclassroom } from "react-icons/si";
 import { GiCalendarHalfYear } from "react-icons/gi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { logOut } from "../feature/auth/authSlice";
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
   const [isActive, setIsActive] = useState(false);
   const [userData, setUserData] = useState(null);
   const studentno = localStorage.getItem("_id");
+
+
+  const navigate = useNavigate()
+	const dispatch = useDispatch()
+
+    const signout = async() => {
+        await dispatch(logOut())
+		toast.warning("Logout successfully")
+        navigate('/login')
+  }
 
 
   // useEffect(() => {
@@ -27,21 +39,17 @@ const Sidebar = () => {
   // menu
   const Menu = [
     {
+      id: 1,
       title: "Dashboard",
       icon: <RiDashboardFill />,
       link: '/',
     },
-    {
-      title: "Course Unit",
-      icon: <AiFillPieChart />,
-      link: '/courses',
+    {id: 2,
+      title: "Profile",
+      icon: <AiFillProfile />,
+      link: '/user-profile',
       spacing: true,
     },
-    // {
-    //   title: "Attendance",
-    //   icon: <AiFillPieChart />,
-    //   link: "/student-attendance",
-    // },
     // {
     //   title: "Evaluation",
     //   icon: <AiFillPieChart />,
@@ -86,19 +94,19 @@ const Sidebar = () => {
         <RxAvatar className="text-[#081A51] text-[5rem] " />
       </div>
      
-        {userData && 
+        {/* {userData &&  */}
          <div className={`flex items-center mx-1 flex-col ${!open && "hidden"}`}>
-         <h1 className="text-white flex flex-1 text-sm font-semibold">
-           userData.namesdbdjbdb
+         <h1 className="text-white flex flex-1 text-xl font-bold pt-4">
+            OKello Otim David
          </h1>
-         <p className="text-slate-200 font-medium text-xs">userData.studentno</p>
+         <p className="text-slate-200 font-medium text-lg">210014053</p>
        </div>
-        }
-      <ul className={`pt-0 `}>
-        {Menu.map((menu, index) => (
+        {/* } */}
+      <ul className={`pt-20 `}>
+        {Menu.map((menu) => (
           <>
             <li
-              key={index}
+              key={menu.id}
               className=""
             >
               <Link to={menu.link}

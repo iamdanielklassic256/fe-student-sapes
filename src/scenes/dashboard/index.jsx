@@ -4,35 +4,22 @@ import WelcomeMessage from "../../components/WelcomeMessage";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { selectCurrentToken, selectCurrentUser } from "../../feature/auth/authSlice";
+import { useSelector } from "react-redux";
 
 // import TransactionChart from '../../components/TransactionChart'
 
 const Dashboard = () => {
-  const [userData, setUserData] = useState(null);
-  const studentno = localStorage.getItem("_id");
-  const [courseunits, setCourseunits] = useState(null);
+  const user = useSelector(selectCurrentUser)
+	const token = useSelector(selectCurrentToken)
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5000/students/642fba044a24ad5e00bf4ec9`)
-      .then((response) => setUserData(response.data))
-      .catch((error) => console.error(error));
-  }, [userData]);
 
-  console.log("User Data:", userData);
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:5000/course-units`)
-      .then((response) => setCourseunits(response.data))
-      .catch((error) => console.error(error));
-  }, [courseunits]);
-
-  console.log("courseunits data...", courseunits)
+	const welcome = user ? `Welcome ${user}!` : `Welcome`;
+	const tokenAbbr = `${token.slice(0, 9) }...`
   return (
     <>
       <div>
-        {userData && <WelcomeMessage name={userData.name} />}
+        <WelcomeMessage welcome={welcome} key={welcome._id}/>
         <DashboardStatsGrid />
       </div>
       {/* <div className="mt-10 grid grid-cols-2 gap-8"> */}
